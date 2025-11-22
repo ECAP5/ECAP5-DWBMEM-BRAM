@@ -56,6 +56,8 @@ logic[31:0] bram_data_q;
 
 logic[7:0] read_data_bytes[4];
 
+logic[8:0] read_address;
+
 /*****************************************/
 
 initial begin
@@ -86,11 +88,13 @@ always_comb begin : read
   read_data_bytes[3] = mem_sel[3] ? bram_data_q[31:24] : 8'h0;
 
   mem_read_data_q = {read_data_bytes[3], read_data_bytes[2], read_data_bytes[1], read_data_bytes[0]};
+
+  read_address = {2'b0, mem_addr[8:2]};
 end
 
 always_ff @(posedge clk_i) begin
   if(mem_read) begin
-    bram_data_q <= bram[mem_addr[8:0]];
+    bram_data_q <= bram[read_address];
   end else begin
     bram_data_q <= 32'h0;
   end
