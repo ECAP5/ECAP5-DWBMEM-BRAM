@@ -43,32 +43,34 @@ module tb_wb_interface
   //=================================
   //    Output interface
 
-  output  logic[7:0]   addr_o,
+  output  logic[31:0]   addr_o,
   output  logic        read_o,
   input   logic[31:0]  read_data_i,
   output  logic        write_o,
-  output  logic[31:0]  write_data_o
+  output  logic[31:0]  write_data_o,
+  output  logic[3:0]   sel_o
 );
 
 wb_interface dut (
-  .clk_i           (clk_i),
-  .rst_i           (rst_i),
+  .clk_i         (clk_i),
+  .rst_i         (rst_i),
 
-  .wb_adr_i   (wb_adr_i),
-  .wb_dat_o   (wb_dat_o),
-  .wb_dat_i   (wb_dat_i),
-  .wb_we_i    (wb_we_i),
-  .wb_sel_i   (wb_sel_i),
-  .wb_stb_i   (wb_stb_i),
-  .wb_ack_o   (wb_ack_o),
-  .wb_cyc_i   (wb_cyc_i),
-  .wb_stall_o (wb_stall_o),
+  .wb_adr_i      (wb_adr_i),
+  .wb_dat_o      (wb_dat_o),
+  .wb_dat_i      (wb_dat_i),
+  .wb_we_i       (wb_we_i),
+  .wb_sel_i      (wb_sel_i),
+  .wb_stb_i      (wb_stb_i),
+  .wb_ack_o      (wb_ack_o),
+  .wb_cyc_i      (wb_cyc_i),
+  .wb_stall_o    (wb_stall_o),
 
-  .addr_o       (addr_o),
-  .read_o       (read_o),
-  .read_data_i  (read_data_i),
-  .write_o      (write_o),
-  .write_data_o (write_data_o)
+  .addr_o        (addr_o),
+  .read_o        (read_o),
+  .read_data_i   (read_data_i),
+  .write_o       (write_o),
+  .write_data_o  (write_data_o),
+  .sel_o         (sel_o)
 );
 
 endmodule // tb_wb_interface
