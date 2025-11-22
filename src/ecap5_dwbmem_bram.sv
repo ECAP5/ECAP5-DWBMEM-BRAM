@@ -21,6 +21,8 @@
  */
 
 module ecap5_dwbmem_bram #(
+  parameter ENABLE_PRELOADING = 0,
+  parameter PRELOAD_HEX_PATH = ""
 )(
   input   logic         clk_i,
   input   logic         rst_i,
@@ -45,7 +47,7 @@ module ecap5_dwbmem_bram #(
 
 logic[31:0] mem_addr;
 logic       mem_read, mem_write;
-logic[31:0] mem_read_data_d, mem_read_data_q, 
+logic[31:0] mem_read_data_q, 
             mem_write_data;
 logic[3:0]  mem_sel;
 
@@ -55,6 +57,12 @@ logic[31:0] bram_data_q;
 logic[7:0] read_data_bytes[4];
 
 /*****************************************/
+
+initial begin
+  if(ENABLE_PRELOADING) begin
+    $readmemh(PRELOAD_HEX_PATH, bram, 0); 
+  end
+end
 
 wb_interface wb_interface_inst (
   .clk_i (clk_i),   .rst_i (rst_i),
@@ -72,22 +80,20 @@ wb_interface wb_interface_inst (
 );
 
 always_comb begin : read
-  mem_read_data_d = 32'h0;
-
   read_data_bytes[0] = mem_sel[0] ? bram_data_q[7:0]   : 8'h0;
   read_data_bytes[1] = mem_sel[1] ? bram_data_q[15:8]  : 8'h0;
   read_data_bytes[2] = mem_sel[2] ? bram_data_q[23:16] : 8'h0;
   read_data_bytes[3] = mem_sel[3] ? bram_data_q[31:24] : 8'h0;
 
-  if(mem_read) begin
-    mem_read_data_d = {read_data_bytes[3], read_data_bytes[2], read_data_bytes[1], read_data_bytes[0]};
-  end
+  mem_read_data_q = {read_data_bytes[3], read_data_bytes[2], read_data_bytes[1], read_data_bytes[0]};
 end
 
 always_ff @(posedge clk_i) begin
-  mem_read_data_q <= mem_read_data_d;
-
-  bram_data_q <= bram[mem_addr[8:0]];
+  if(mem_read) begin
+    bram_data_q <= bram[mem_addr[8:0]];
+  end else begin
+    bram_data_q <= 32'h0;
+  end
 
   if(mem_write) begin
     if(mem_sel[0]) begin

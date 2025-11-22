@@ -40,7 +40,8 @@ enum StateId {
   T_R32,
   T_W8,
   T_W16,
-  T_W32
+  T_W32,
+  T_PRELOAD
 };
 
 class TB_Ecap5_dwbmem_bram : public Testbench<Vtb_ecap5_dwbmem_bram> {
@@ -91,7 +92,7 @@ void tb_ecap5_dwbmem_bram_r_32(TB_Ecap5_dwbmem_bram * tb) {
 
   tb->reset();
 
-  tb->write(0x4, 0x11111111, 0xF);
+  tb->write(0xF, 0x11111111, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -100,7 +101,7 @@ void tb_ecap5_dwbmem_bram_r_32(TB_Ecap5_dwbmem_bram * tb) {
   tb->core->wb_cyc_i = 0;
   tb->tick();
 
-  tb->read(0x4, 0xF);
+  tb->read(0xF, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -117,7 +118,7 @@ void tb_ecap5_dwbmem_bram_r_16(TB_Ecap5_dwbmem_bram * tb) {
 
   tb->reset();
 
-  tb->write(0x4, 0x22222222, 0xF);
+  tb->write(0xF, 0x22222222, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -126,7 +127,7 @@ void tb_ecap5_dwbmem_bram_r_16(TB_Ecap5_dwbmem_bram * tb) {
   tb->core->wb_cyc_i = 0;
   tb->tick();
 
-  tb->read(0x4, 0x3);
+  tb->read(0xF, 0x3);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -143,7 +144,7 @@ void tb_ecap5_dwbmem_bram_r_8(TB_Ecap5_dwbmem_bram * tb) {
 
   tb->reset();
 
-  tb->write(0x4, 0x33333333, 0xF);
+  tb->write(0xF, 0x33333333, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -152,7 +153,7 @@ void tb_ecap5_dwbmem_bram_r_8(TB_Ecap5_dwbmem_bram * tb) {
   tb->core->wb_cyc_i = 0;
   tb->tick();
 
-  tb->read(0x4, 0x1);
+  tb->read(0xF, 0x1);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -169,7 +170,7 @@ void tb_ecap5_dwbmem_bram_w_32(TB_Ecap5_dwbmem_bram * tb) {
 
   tb->reset();
 
-  tb->write(0x4, 0x44444444, 0xF);
+  tb->write(0xF, 0x44444444, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -178,7 +179,7 @@ void tb_ecap5_dwbmem_bram_w_32(TB_Ecap5_dwbmem_bram * tb) {
   tb->core->wb_cyc_i = 0;
   tb->tick();
 
-  tb->read(0x4, 0xF);
+  tb->read(0xF, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -195,7 +196,7 @@ void tb_ecap5_dwbmem_bram_w_16(TB_Ecap5_dwbmem_bram * tb) {
 
   tb->reset();
 
-  tb->write(0x4, 0x55555555, 0x3);
+  tb->write(0xF, 0x55555555, 0x3);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -204,7 +205,7 @@ void tb_ecap5_dwbmem_bram_w_16(TB_Ecap5_dwbmem_bram * tb) {
   tb->core->wb_cyc_i = 0;
   tb->tick();
 
-  tb->read(0x4, 0xF);
+  tb->read(0xF, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -221,7 +222,7 @@ void tb_ecap5_dwbmem_bram_w_8(TB_Ecap5_dwbmem_bram * tb) {
 
   tb->reset();
 
-  tb->write(0x4, 0x66666666, 0x1);
+  tb->write(0xF, 0x66666666, 0x1);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -230,7 +231,7 @@ void tb_ecap5_dwbmem_bram_w_8(TB_Ecap5_dwbmem_bram * tb) {
   tb->core->wb_cyc_i = 0;
   tb->tick();
 
-  tb->read(0x4, 0xF);
+  tb->read(0xF, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -239,6 +240,25 @@ void tb_ecap5_dwbmem_bram_w_8(TB_Ecap5_dwbmem_bram * tb) {
 
   tb->core->wb_cyc_i = 0;
   tb->tick();
+}
+
+void tb_ecap5_dwbmem_bram_preload(TB_Ecap5_dwbmem_bram * tb) {
+  Vtb_ecap5_dwbmem_bram * core = tb->core;
+  core->testcase = T_PRELOAD;
+
+  tb->reset();
+
+  for(int i = 0; i < 15; i++) {
+    tb->read(i, 0xF);
+    tb->tick();
+
+    tb->core->wb_stb_i = 0;
+
+    tb->tick();
+
+    tb->core->wb_cyc_i = 0;
+    tb->tick();
+  }
 }
 
 int main(int argc, char ** argv, char ** env) {
@@ -261,6 +281,7 @@ int main(int argc, char ** argv, char ** env) {
   tb_ecap5_dwbmem_bram_w_32(tb);
   tb_ecap5_dwbmem_bram_w_16(tb);
   tb_ecap5_dwbmem_bram_w_8(tb);
+  tb_ecap5_dwbmem_bram_preload(tb);
 
   /************************************************************/
 

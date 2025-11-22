@@ -41,7 +41,10 @@ module tb_ecap5_dwbmem_bram
   output  logic        wb_stall_o
 );
 
-ecap5_dwbmem_bram dut (
+ecap5_dwbmem_bram #(
+  .ENABLE_PRELOADING (1),
+  .PRELOAD_HEX_PATH ("/home/ubuntu/ecap5/design/wbmem-bram/tests/benches/ecap5_dwbmem_bram/program.hex")
+) dut (
   .clk_i      (clk_i),
   .rst_i      (rst_i),
 
@@ -57,3 +60,8 @@ ecap5_dwbmem_bram dut (
 );
 
 endmodule // tb_ecap5_dwbmem_bram
+
+`verilator_config
+
+public -module "ecap5_dwbmem_bram" -var "bram"
+
