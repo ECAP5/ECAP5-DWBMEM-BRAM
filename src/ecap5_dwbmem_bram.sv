@@ -64,7 +64,7 @@ initial begin
   end
 end
 
-wb_interface wb_interface_inst (
+TMP_wb_interface wb_interface_inst (
   .clk_i (clk_i),   .rst_i (rst_i),
   
   .wb_adr_i (wb_adr_i),  .wb_dat_o (wb_dat_o),  .wb_dat_i   (wb_dat_i),

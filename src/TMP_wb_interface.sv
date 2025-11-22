@@ -20,7 +20,7 @@
  * along with ECAP5-DWBMEM-BRAM.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-module wb_interface
+module TMP_wb_interface
 (
   input   logic         clk_i,
   input   logic         rst_i,
