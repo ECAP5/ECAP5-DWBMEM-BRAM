@@ -93,10 +93,13 @@ void tb_wb_interface_read(TB_Wb_interface * tb) {
   tb->reset();
 
   //`````````````````````````````````
-  //      Set inputs
+  //      Checks 
   
   tb->check(COND_output, (core->read_o == 0) &&
                          (core->write_o == 0));
+  
+  //`````````````````````````````````
+  //      Set inputs
   
   uint32_t addr = rand();
   tb->read(addr);
@@ -108,7 +111,7 @@ void tb_wb_interface_read(TB_Wb_interface * tb) {
   //      Checks 
   
   tb->check(COND_output, (core->read_o == 1) &&
-                         (core->addr_o == (addr & 0xFF)) &&
+                         (core->addr_o == addr) &&
                          (core->write_o == 0));
 
   //=================================
@@ -196,7 +199,7 @@ void tb_wb_interface_write(TB_Wb_interface * tb) {
   //      Checks 
   
   tb->check(COND_output, (core->read_o == 0) &&
-                         (core->addr_o == (addr & 0xFF)) &&
+                         (core->addr_o == addr) &&
                          (core->write_o == 1) &&
                          (core->write_data_o == data));
 

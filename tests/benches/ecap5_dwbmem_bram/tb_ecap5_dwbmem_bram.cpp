@@ -31,26 +31,16 @@
 #include "testbench.h"
 
 enum CondId {
-  COND_reset,
-  COND_mem,
-  COND_rx,
-  COND_tx,
-  COND_registers,
   __CondIdEnd
 };
 
-enum TestcaseId {
-  T_IDLE                  = 1,
-  T_WRITE_CR              = 2,
-  T_WRITE_TXDR            = 3,
-  T_READ_RXDR             = 4,
-  T_RXOE                  = 5,
-  T_FE                    = 6,
-  T_PE                    = 7,
-  T_FULL_DUPLEX           = 8
-};
-
 enum StateId {
+  T_R8 = 1,
+  T_R16,
+  T_R32,
+  T_W8,
+  T_W16,
+  T_W32
 };
 
 class TB_Ecap5_dwbmem_bram : public Testbench<Vtb_ecap5_dwbmem_bram> {
@@ -76,24 +66,180 @@ public:
     this->core->wb_cyc_i = 0;
   }
 
-  void read(uint32_t addr) {
+  void read(uint32_t addr, uint8_t sel) {
     this->core->wb_adr_i = addr;
     this->core->wb_dat_i = 0;
     this->core->wb_we_i = 0;
-    this->core->wb_sel_i = 0xF;
+    this->core->wb_sel_i = sel & 0xF;
     this->core->wb_stb_i = 1;
     this->core->wb_cyc_i = 1;
   }
 
-  void write(uint32_t addr, uint32_t data) {
+  void write(uint32_t addr, uint32_t data, uint8_t sel) {
     this->core->wb_adr_i = addr;
     this->core->wb_dat_i = data;
     this->core->wb_we_i = 1;
-    this->core->wb_sel_i = 0xF;
+    this->core->wb_sel_i = sel & 0xF;
     this->core->wb_stb_i = 1;
     this->core->wb_cyc_i = 1;
   }
 };
+
+void tb_ecap5_dwbmem_bram_r_32(TB_Ecap5_dwbmem_bram * tb) {
+  Vtb_ecap5_dwbmem_bram * core = tb->core;
+  core->testcase = T_R32;
+
+  tb->reset();
+
+  tb->write(0x4, 0x11111111, 0xF);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->read(0x4, 0xF);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+}
+
+void tb_ecap5_dwbmem_bram_r_16(TB_Ecap5_dwbmem_bram * tb) {
+  Vtb_ecap5_dwbmem_bram * core = tb->core;
+  core->testcase = T_R16;
+
+  tb->reset();
+
+  tb->write(0x4, 0x22222222, 0xF);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->read(0x4, 0x3);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+}
+
+void tb_ecap5_dwbmem_bram_r_8(TB_Ecap5_dwbmem_bram * tb) {
+  Vtb_ecap5_dwbmem_bram * core = tb->core;
+  core->testcase = T_R8;
+
+  tb->reset();
+
+  tb->write(0x4, 0x33333333, 0xF);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->read(0x4, 0x1);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+}
+
+void tb_ecap5_dwbmem_bram_w_32(TB_Ecap5_dwbmem_bram * tb) {
+  Vtb_ecap5_dwbmem_bram * core = tb->core;
+  core->testcase = T_W32;
+
+  tb->reset();
+
+  tb->write(0x4, 0x44444444, 0xF);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->read(0x4, 0xF);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+}
+
+void tb_ecap5_dwbmem_bram_w_16(TB_Ecap5_dwbmem_bram * tb) {
+  Vtb_ecap5_dwbmem_bram * core = tb->core;
+  core->testcase = T_W16;
+
+  tb->reset();
+
+  tb->write(0x4, 0x55555555, 0x3);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->read(0x4, 0xF);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+}
+
+void tb_ecap5_dwbmem_bram_w_8(TB_Ecap5_dwbmem_bram * tb) {
+  Vtb_ecap5_dwbmem_bram * core = tb->core;
+  core->testcase = T_W8;
+
+  tb->reset();
+
+  tb->write(0x4, 0x66666666, 0x1);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->read(0x4, 0xF);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+}
 
 int main(int argc, char ** argv, char ** env) {
   srand(time(NULL));
@@ -109,6 +255,12 @@ int main(int argc, char ** argv, char ** env) {
 
   /************************************************************/
 
+  tb_ecap5_dwbmem_bram_r_32(tb);
+  tb_ecap5_dwbmem_bram_r_16(tb);
+  tb_ecap5_dwbmem_bram_r_8(tb);
+  tb_ecap5_dwbmem_bram_w_32(tb);
+  tb_ecap5_dwbmem_bram_w_16(tb);
+  tb_ecap5_dwbmem_bram_w_8(tb);
 
   /************************************************************/
 

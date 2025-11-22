@@ -43,10 +43,16 @@ module ecap5_dwbmem_bram #(
 /*           Internal signals            */
 /*****************************************/
 
-logic[7:0]  mem_addr;
+logic[31:0] mem_addr;
 logic       mem_read, mem_write;
 logic[31:0] mem_read_data_d, mem_read_data_q, 
             mem_write_data;
+logic[3:0]  mem_sel;
+
+logic[31:0] bram[512];
+logic[31:0] bram_data_q;
+
+logic[7:0] read_data_bytes[4];
 
 /*****************************************/
 
@@ -61,7 +67,42 @@ wb_interface wb_interface_inst (
   .read_o       (mem_read),
   .read_data_i  (mem_read_data_q),
   .write_o      (mem_write),
-  .write_data_o (mem_write_data)
+  .write_data_o (mem_write_data),
+  .sel_o        (mem_sel)
 );
+
+always_comb begin : read
+  mem_read_data_d = 32'h0;
+
+  read_data_bytes[0] = mem_sel[0] ? bram_data_q[7:0]   : 8'h0;
+  read_data_bytes[1] = mem_sel[1] ? bram_data_q[15:8]  : 8'h0;
+  read_data_bytes[2] = mem_sel[2] ? bram_data_q[23:16] : 8'h0;
+  read_data_bytes[3] = mem_sel[3] ? bram_data_q[31:24] : 8'h0;
+
+  if(mem_read) begin
+    mem_read_data_d = {read_data_bytes[3], read_data_bytes[2], read_data_bytes[1], read_data_bytes[0]};
+  end
+end
+
+always_ff @(posedge clk_i) begin
+  mem_read_data_q <= mem_read_data_d;
+
+  bram_data_q <= bram[mem_addr[8:0]];
+
+  if(mem_write) begin
+    if(mem_sel[0]) begin
+      bram[mem_addr[8:0]][7:0] <= mem_write_data[7:0];
+    end
+    if(mem_sel[1]) begin
+      bram[mem_addr[8:0]][15:8] <= mem_write_data[15:8];
+    end
+    if(mem_sel[2]) begin
+      bram[mem_addr[8:0]][23:16] <= mem_write_data[23:16];
+    end
+    if(mem_sel[3]) begin
+      bram[mem_addr[8:0]][31:24] <= mem_write_data[31:24];
+    end
+  end
+end
 
 endmodule // ecap5_dwbmem_bram
