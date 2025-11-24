@@ -1,4 +1,0 @@
--no-trailing-spaces
--line-length
--explicit-parameter-storage-type
-+parameter-name-style="localparam_style:ALL_CAPS"
