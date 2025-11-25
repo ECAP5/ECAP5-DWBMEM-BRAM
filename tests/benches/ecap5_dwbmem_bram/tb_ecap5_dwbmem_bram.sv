@@ -60,8 +60,3 @@ ecap5_dwbmem_bram #(
 );
 
 endmodule // tb_ecap5_dwbmem_bram
-
-`verilator_config
-
-public -module "ecap5_dwbmem_bram" -var "bram"
-
