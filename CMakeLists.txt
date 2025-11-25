@@ -49,9 +49,13 @@ add_dependency(ECAP5_TREQ
   TAG tags/v2.3.1
   BINARY ecap5-treq)
 
+add_dependency(ECAP5_DWBMMSC
+  GIT ecap5/ecap5-dwbmmsc
+  TAG release/v1.0.0)
+
 add_dependency(ECAP5_DTESTLIB
   GIT ecap5/ecap5-dtestlib
-  TAG tags/v1.0.0)
+  TAG release/v1.1.0)
 
 add_dependency(sphinx-cmake
   GIT ecap5/sphinx-cmake
@@ -71,6 +75,8 @@ include(${verilator_cmake_SOURCE_DIR}/cmake/verilator-config.cmake)
 include(${ecap5_treq_SOURCE_DIR}/config.cmake)
 list(APPEND CMAKE_MODULE_PATH "${sphinx_cmake_SOURCE_DIR}/cmake")
 include(${oss_cad_suite_cmake_SOURCE_DIR}/cmake/oss-cad-suite-config.cmake)
+include(${ecap5_dtestlib_SOURCE_DIR}/cmake/testbench.cmake)
+include(${ecap5_dtestlib_SOURCE_DIR}/cmake/lint.cmake)
 
 # Include subdirectories
 
@@ -80,7 +86,7 @@ add_subdirectory(tests)
 # Synthesis
 
 add_synthesis_target(
-  SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/*
+  SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/* ${ecap5_dwbmmsc_SOURCE_DIR}/src/*
   TOP_MODULE ecap5_dwbmem_bram
   TARGET_FPGA ecp5
   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/synth.json)
