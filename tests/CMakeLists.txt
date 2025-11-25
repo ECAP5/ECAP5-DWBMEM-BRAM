@@ -19,28 +19,32 @@
 # You should have received a copy of the GNU General Public License
 # along with ECAP5-DWBMEM-BRAM.  If not, see <http://www.gnu.org/licenses/>.
 
+# Bench parent directory
 set(BENCH_DIR ${CMAKE_CURRENT_SOURCE_DIR}/benches/)
+# C++ bench include directory
 set(TEST_INCLUDE_DIR ${ecap5_dtestlib_SOURCE_DIR}/include)
-set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/)
-set(INCLUDE_DIR ${SRC_DIR}/include/)
+# HDL source directories
+set(SRC_DIRS ${CMAKE_SOURCE_DIR}/src/ ${ecap5_dwbmmsc_SOURCE_DIR}/src)
+# HDL library directories
 set(LIBS_DIR ${ecap5_dtestlib_SOURCE_DIR}/src/)
+# Bench CSV output directory
 set(TESTDATA_DIR ${CMAKE_CURRENT_BINARY_DIR}/testdata/)
-set(CONFIG_DIR ${CMAKE_SOURCE_DIR}/config/)
-
-# Create folders for the waves and testdata
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/waves)
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testdata)
 
 # Lint
-file(GLOB SRC_FILES ${SRC_DIR}/*.sv)
-file(GLOB INCLUDE_FILES ${INCLUDE_DIR}/*.svh)
-add_custom_target(lint 
-  COMMAND verible-verilog-lint ${SRC_FILES} ${INCLUDE_FILES} --rules_config="${CONFIG_DIR}/verible-lint.rules" --waiver_files="${CONFIG_DIR}/verible-lint.waives"
-  DEPENDS ${SRC_FILES} ${INCLUDE_FILES})
+add_lint_target(
+  TARGET lint
+  SRC_DIRS ${SRC_DIRS}
+)
 
-add_subdirectory(benches)
+# Add testbenches
+add_testbench(
+  MODULE       ecap5_dwbmem_bram
+  BENCH_DIR    ${BENCH_DIR}
+  LIBS_DIR     ${LIBS_DIR}
+  TESTDATA_DIR ${TESTDATA_DIR}
+  SRC_DIRS     ${SRC_DIRS} 
+)
 
 # Main targets
-add_custom_target(build DEPENDS benches-build)
-add_custom_target(tests DEPENDS benches)
-
+add_custom_target(build DEPENDS ${TEST_BINARIES})
+add_custom_target(tests DEPENDS ${TEST_TARGETS})
