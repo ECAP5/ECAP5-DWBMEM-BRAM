@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
-[*] Sat Nov 22 12:34:49 2025
+[*] Tue Nov 25 18:06:46 2025
 [*]
 [dumpfile] "/Users/cchaine/Desktop/Documents/projects/.ecap5.nosync/design/wbmem-bram/build/tests/waves/ecap5_dwbmem_bram.vcd"
-[dumpfile_mtime] "Sat Nov 22 12:31:03 2025"
-[dumpfile_size] 8328
+[dumpfile_mtime] "Tue Nov 25 18:06:03 2025"
+[dumpfile_size] 28234
 [savefile] "/Users/cchaine/Desktop/Documents/projects/.ecap5.nosync/design/wbmem-bram/config/gtkwave/config/ecap5_dwbmem_bram.gtkw"
-[timestart] 1
-[size] 1748 842
-[pos] -381 -182
-*-3.836501 -1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[timestart] 928
+[size] 1920 955
+[pos] -1 -1
+*-5.836501 1005 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 [markername] AA
 [markername] BB
 [markername] CC
@@ -40,10 +40,10 @@
 [treeopen] TOP.tb_ecap5_dwbmem_bram.
 [treeopen] TOP.tb_ecap5_dwbmem_bram.dut.
 [sst_width] 255
-[signals_width] 144
+[signals_width] 396
 [sst_expanded] 1
-[sst_vpaned_height] 374
-@2025
+[sst_vpaned_height] 195
+@2024
 [color] 1
 ^1 /Users/cchaine/Desktop/Documents/projects/.ecap5.nosync/design/wbmem-bram/config/gtkwave/filters/ecap5_dwbmem_bram.gtkw
 TOP.tb_ecap5_dwbmem_bram.testcase[31:0]
