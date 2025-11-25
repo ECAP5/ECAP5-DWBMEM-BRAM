@@ -92,7 +92,7 @@ void tb_ecap5_dwbmem_bram_r_32(TB_Ecap5_dwbmem_bram * tb) {
 
   tb->reset();
 
-  tb->write(0xF, 0x11111111, 0xF);
+  tb->write(0x10, 0x11223344, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -101,7 +101,7 @@ void tb_ecap5_dwbmem_bram_r_32(TB_Ecap5_dwbmem_bram * tb) {
   tb->core->wb_cyc_i = 0;
   tb->tick();
 
-  tb->read(0xF, 0xF);
+  tb->read(0x10, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -118,7 +118,7 @@ void tb_ecap5_dwbmem_bram_r_16(TB_Ecap5_dwbmem_bram * tb) {
 
   tb->reset();
 
-  tb->write(0xF, 0x22222222, 0xF);
+  tb->write(0x10, 0x11223344, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -127,7 +127,17 @@ void tb_ecap5_dwbmem_bram_r_16(TB_Ecap5_dwbmem_bram * tb) {
   tb->core->wb_cyc_i = 0;
   tb->tick();
 
-  tb->read(0xF, 0x3);
+  tb->read(0x10, 0x3);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->read(0x12, 0x3);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -144,7 +154,7 @@ void tb_ecap5_dwbmem_bram_r_8(TB_Ecap5_dwbmem_bram * tb) {
 
   tb->reset();
 
-  tb->write(0xF, 0x33333333, 0xF);
+  tb->write(0x10, 0x11223344, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -153,7 +163,37 @@ void tb_ecap5_dwbmem_bram_r_8(TB_Ecap5_dwbmem_bram * tb) {
   tb->core->wb_cyc_i = 0;
   tb->tick();
 
-  tb->read(0xF, 0x1);
+  tb->read(0x10, 0x1);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->read(0x11, 0x1);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->read(0x12, 0x1);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->read(0x13, 0x1);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -170,7 +210,7 @@ void tb_ecap5_dwbmem_bram_w_32(TB_Ecap5_dwbmem_bram * tb) {
 
   tb->reset();
 
-  tb->write(0xF, 0x44444444, 0xF);
+  tb->write(0x10, 0x44444444, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -179,7 +219,7 @@ void tb_ecap5_dwbmem_bram_w_32(TB_Ecap5_dwbmem_bram * tb) {
   tb->core->wb_cyc_i = 0;
   tb->tick();
 
-  tb->read(0xF, 0xF);
+  tb->read(0x10, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -196,7 +236,7 @@ void tb_ecap5_dwbmem_bram_w_16(TB_Ecap5_dwbmem_bram * tb) {
 
   tb->reset();
 
-  tb->write(0xF, 0x55555555, 0x3);
+  tb->write(0x10, 0x55555555, 0x3);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -205,7 +245,26 @@ void tb_ecap5_dwbmem_bram_w_16(TB_Ecap5_dwbmem_bram * tb) {
   tb->core->wb_cyc_i = 0;
   tb->tick();
 
-  tb->read(0xF, 0xF);
+  tb->read(0x10, 0xF);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->write(0x12, 0x66666666, 0x3);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->read(0x10, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -222,7 +281,7 @@ void tb_ecap5_dwbmem_bram_w_8(TB_Ecap5_dwbmem_bram * tb) {
 
   tb->reset();
 
-  tb->write(0xF, 0x66666666, 0x1);
+  tb->write(0x10, 0x77777777, 0x1);
   tb->tick();
 
   tb->core->wb_stb_i = 0;
@@ -231,7 +290,64 @@ void tb_ecap5_dwbmem_bram_w_8(TB_Ecap5_dwbmem_bram * tb) {
   tb->core->wb_cyc_i = 0;
   tb->tick();
 
-  tb->read(0xF, 0xF);
+  tb->read(0x10, 0xF);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->write(0x11, 0x88888888, 0x1);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->read(0x10, 0xF);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->write(0x12, 0x99999999, 0x1);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->read(0x10, 0xF);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->write(0x13, 0xAAAAAAAA, 0x1);
+  tb->tick();
+
+  tb->core->wb_stb_i = 0;
+  tb->tick();
+
+  tb->core->wb_cyc_i = 0;
+  tb->tick();
+
+  tb->read(0x10, 0xF);
   tb->tick();
 
   tb->core->wb_stb_i = 0;

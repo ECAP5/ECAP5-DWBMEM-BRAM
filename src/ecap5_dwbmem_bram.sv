@@ -51,10 +51,18 @@ logic[31:0] mem_read_data_q,
             mem_write_data;
 logic[3:0]  mem_sel;
 
+logic       mem_write_q;
+
 logic[31:0] bram[512];
+logic[8:0] cell_address;
 logic[31:0] bram_data_q;
+logic[31:0] bram_data_shift0;
+logic[31:0] bram_data_shift1;
 
 logic[7:0] read_data_bytes[4];
+
+logic[3:0] sel_shift0;
+logic[3:0] sel_shift1;
 
 /*****************************************/
 
@@ -79,34 +87,49 @@ ecap5_dwbmmsc wb_interface_inst (
   .sel_o        (mem_sel)
 );
 
-always_comb begin : read
-  read_data_bytes[0] = mem_sel[0] ? bram_data_q[7:0]   : 8'h0;
-  read_data_bytes[1] = mem_sel[1] ? bram_data_q[15:8]  : 8'h0;
-  read_data_bytes[2] = mem_sel[2] ? bram_data_q[23:16] : 8'h0;
-  read_data_bytes[3] = mem_sel[3] ? bram_data_q[31:24] : 8'h0;
+assign cell_address = {2'b0, mem_addr[8:2]};
 
+always_comb begin : read
+
+  // barrel shift the data according to the address
+  bram_data_shift0 = mem_addr[0] ? {8'b0, bram_data_q[31:8]} : bram_data_q;
+  bram_data_shift1 = mem_addr[1] ? {16'b0, bram_data_shift0[31:16]} : bram_data_shift0;
+
+  // Set unselected bytes to zero
+  read_data_bytes[0] = mem_sel[0] ? bram_data_shift1[7:0]   : 8'h0;
+  read_data_bytes[1] = mem_sel[1] ? bram_data_shift1[15:8]  : 8'h0;
+  read_data_bytes[2] = mem_sel[2] ? bram_data_shift1[23:16] : 8'h0;
+  read_data_bytes[3] = mem_sel[3] ? bram_data_shift1[31:24] : 8'h0;
+
+  // Assemble the final read data
   mem_read_data_q = {read_data_bytes[3], read_data_bytes[2], read_data_bytes[1], read_data_bytes[0]};
+end
+
+always_comb begin : write
+  // barrel shift the sel
+  sel_shift0 = mem_addr[0] ? {mem_sel[2:0], 1'b0} : mem_sel;
+  sel_shift1 = mem_addr[1] ? {sel_shift0[1:0], 2'b0} : sel_shift0;
 end
 
 always_ff @(posedge clk_i) begin
   if(mem_read) begin
-    bram_data_q <= bram[mem_addr[8:0]];
+    bram_data_q <= bram[cell_address];
   end else begin
     bram_data_q <= 32'h0;
   end
 
   if(mem_write) begin
-    if(mem_sel[0]) begin
-      bram[mem_addr[8:0]][7:0] <= mem_write_data[7:0];
+    if(sel_shift1[0]) begin
+      bram[cell_address][7:0] <= mem_write_data[7:0];
     end
-    if(mem_sel[1]) begin
-      bram[mem_addr[8:0]][15:8] <= mem_write_data[15:8];
+    if(sel_shift1[1]) begin
+      bram[cell_address][15:8] <= mem_write_data[15:8];
     end
-    if(mem_sel[2]) begin
-      bram[mem_addr[8:0]][23:16] <= mem_write_data[23:16];
+    if(sel_shift1[2]) begin
+      bram[cell_address][23:16] <= mem_write_data[23:16];
     end
-    if(mem_sel[3]) begin
-      bram[mem_addr[8:0]][31:24] <= mem_write_data[31:24];
+    if(sel_shift1[3]) begin
+      bram[cell_address][31:24] <= mem_write_data[31:24];
     end
   end
 end
