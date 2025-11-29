@@ -114,8 +114,6 @@ end
 always_ff @(posedge clk_i) begin
   if(mem_read) begin
     bram_data_q <= bram[cell_address];
-  end else begin
-    bram_data_q <= 32'h0;
   end
 
   if(mem_write) begin
