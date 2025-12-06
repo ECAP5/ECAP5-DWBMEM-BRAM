@@ -21,8 +21,8 @@
  */
 
 module ecap5_dwbmem_bram #(
-  parameter ENABLE_PRELOADING = 0,
-  parameter PRELOAD_HEX_PATH = ""
+  parameter logic  ENABLE_PRELOADING = 0,
+  parameter string PRELOAD_HEX_PATH = ""
 )(
   input   logic         clk_i,
   input   logic         rst_i,
