@@ -21,6 +21,7 @@
  */
 
 module ecap5_dwbmem_bram #(
+  parameter int    SIZE = 512,
   parameter logic  ENABLE_PRELOADING = 0,
   parameter string PRELOAD_HEX_PATH = ""
 )(
@@ -53,8 +54,8 @@ logic[3:0]  mem_sel;
 
 logic       mem_write_q;
 
-logic[31:0] bram[512];
-logic[8:0] cell_address;
+logic[31:0] bram[SIZE];
+logic[$clog2(SIZE)-1:0]  cell_address;
 logic[31:0] bram_data_q;
 logic[31:0] bram_data_shift0;
 logic[31:0] bram_data_shift1;
@@ -87,7 +88,7 @@ ecap5_dwbmmsc wb_interface_inst (
   .sel_o        (mem_sel)
 );
 
-assign cell_address = {2'b0, mem_addr[8:2]};
+assign cell_address = {mem_addr[$clog2(SIZE)-1:2], 2'b0};
 
 always_comb begin : read
 
