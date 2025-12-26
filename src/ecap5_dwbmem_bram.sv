@@ -88,7 +88,7 @@ ecap5_dwbmmsc wb_interface_inst (
   .sel_o        (mem_sel)
 );
 
-assign cell_address = {mem_addr[$clog2(SIZE)-1:2], 2'b0};
+assign cell_address = {2'b0, mem_addr[$clog2(SIZE)-1:2]};
 
 always_comb begin : read
 
