@@ -31,6 +31,9 @@
 #include "testbench.h"
 
 enum CondId {
+  COND_read,
+  COND_write,
+  COND_preload,
   __CondIdEnd
 };
 
@@ -90,272 +93,471 @@ void tb_ecap5_dwbmem_bram_r_32(TB_Ecap5_dwbmem_bram * tb) {
   Vtb_ecap5_dwbmem_bram * core = tb->core;
   core->testcase = T_R32;
 
+  //=================================
+  //      Tick (0)
+  
   tb->reset();
 
-  tb->write(0x10, 0x11223344, 0xF);
+  //`````````````````````````````````
+  //      Set inputs
+  
+  tb->write(0x40, 0x11223344, 0xF);
+
+  //=================================
+  //      Tick (1)
+  
   tb->tick();
 
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_stb_i = 0;
+
+  //=================================
+  //      Tick (2)
+  
   tb->tick();
 
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_cyc_i = 0;
+
+  //=================================
+  //      Tick (3)
+  
   tb->tick();
 
-  tb->read(0x10, 0xF);
+  //`````````````````````````````````
+  //      Set inputs
+  
+  tb->read(0x40, 0xF);
+
+  //=================================
+  //      Tick (4)
+  
   tb->tick();
 
+  //`````````````````````````````````
+  //      Checks 
+  
+  tb->check(COND_read, (core->wb_dat_o == 0x11223344));
+
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_stb_i = 0;
 
+  //=================================
+  //      Tick (5)
+  
   tb->tick();
 
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_cyc_i = 0;
+
+  //=================================
+  //      Tick (6)
+  
   tb->tick();
+
+  //`````````````````````````````````
+  //      Formal Checks 
+  
+  CHECK("tb_ecap5_dwbmem_bram.r_32.01",
+      tb->conditions[COND_read],
+      "Failed to implement the read function", tb->err_cycles[COND_read]);
 }
 
 void tb_ecap5_dwbmem_bram_r_16(TB_Ecap5_dwbmem_bram * tb) {
   Vtb_ecap5_dwbmem_bram * core = tb->core;
   core->testcase = T_R16;
 
+  //=================================
+  //      Tick (0)
+  
   tb->reset();
 
-  tb->write(0x10, 0x11223344, 0xF);
+  //`````````````````````````````````
+  //      Set inputs
+  
+  uint32_t data = 0x11223344;
+  tb->write(0x40, data, 0xF);
+
+  //=================================
+  //      Tick (1)
+  
   tb->tick();
 
-  tb->core->wb_stb_i = 0;
-  tb->tick();
-
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
-
-  tb->read(0x10, 0x3);
-  tb->tick();
-
-  tb->core->wb_stb_i = 0;
-
-  tb->tick();
-
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
-
-  tb->read(0x12, 0x3);
-  tb->tick();
-
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_stb_i = 0;
 
+  //=================================
+  //      Tick (2)
+  
   tb->tick();
 
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_cyc_i = 0;
+
+  //=================================
+  //      Tick (3)
+  
   tb->tick();
+
+
+  //=================================
+  //      Tick (4-15)
+  
+  for(int i = 0; i < 2; i++) {
+    tb->read(0x40 + (2*i), 0x3);
+
+    tb->tick();
+
+    uint32_t expected_data = (data >> (16*i)) & 0xFFFF;
+    tb->check(COND_read, (core->wb_dat_o == expected_data));
+
+    tb->core->wb_stb_i = 0;
+
+    tb->tick();
+
+    tb->core->wb_cyc_i = 0;
+
+    tb->tick();
+  }
+
+  //`````````````````````````````````
+  //      Formal Checks 
+  
+  CHECK("tb_ecap5_dwbmem_bram.r_16.01",
+      tb->conditions[COND_read],
+      "Failed to implement the read function", tb->err_cycles[COND_read]);
 }
 
 void tb_ecap5_dwbmem_bram_r_8(TB_Ecap5_dwbmem_bram * tb) {
   Vtb_ecap5_dwbmem_bram * core = tb->core;
   core->testcase = T_R8;
 
+  //=================================
+  //      Tick (0)
+  
   tb->reset();
 
-  tb->write(0x10, 0x11223344, 0xF);
+  //`````````````````````````````````
+  //      Set inputs
+  
+  uint32_t data = 0x11223344;
+  tb->write(0x40, data, 0xF);
+
+  //=================================
+  //      Tick (1)
+  
   tb->tick();
 
-  tb->core->wb_stb_i = 0;
-  tb->tick();
-
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
-
-  tb->read(0x10, 0x1);
-  tb->tick();
-
-  tb->core->wb_stb_i = 0;
-
-  tb->tick();
-
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
-
-  tb->read(0x11, 0x1);
-  tb->tick();
-
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_stb_i = 0;
 
+  //=================================
+  //      Tick (2)
+  
   tb->tick();
 
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_cyc_i = 0;
+
+  //=================================
+  //      Tick (3)
+  
   tb->tick();
 
-  tb->read(0x12, 0x1);
-  tb->tick();
+  //=================================
+  //      Tick (4-15)
+  
+  for(int i = 0; i < 4; i++) {
+    tb->read(0x40 + i, 0x1);
 
-  tb->core->wb_stb_i = 0;
+    tb->tick();
 
-  tb->tick();
+    uint32_t expected_data = (data >> (8*i)) & 0xFF;
+    tb->check(COND_read, (core->wb_dat_o == expected_data));
 
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
+    tb->core->wb_stb_i = 0;
 
-  tb->read(0x13, 0x1);
-  tb->tick();
+    tb->tick();
 
-  tb->core->wb_stb_i = 0;
+    tb->core->wb_cyc_i = 0;
 
-  tb->tick();
+    tb->tick();
+  }
 
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
+  //`````````````````````````````````
+  //      Formal Checks 
+  
+  CHECK("tb_ecap5_dwbmem_bram.r_8.01",
+      tb->conditions[COND_read],
+      "Failed to implement the read function", tb->err_cycles[COND_read]);
 }
 
 void tb_ecap5_dwbmem_bram_w_32(TB_Ecap5_dwbmem_bram * tb) {
   Vtb_ecap5_dwbmem_bram * core = tb->core;
   core->testcase = T_W32;
 
+  //=================================
+  //      Tick (0)
+  
   tb->reset();
 
-  tb->write(0x10, 0x44444444, 0xF);
+  //`````````````````````````````````
+  //      Set inputs
+  
+  uint32_t data = 0x11223344;
+  tb->write(0x40, data, 0xF);
+
+  //=================================
+  //      Tick (1)
+  
   tb->tick();
 
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_stb_i = 0;
+
+  //=================================
+  //      Tick (2)
+  
   tb->tick();
 
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_cyc_i = 0;
+
+  //=================================
+  //      Tick (3)
+  
   tb->tick();
 
-  tb->read(0x10, 0xF);
+  //`````````````````````````````````
+  //      Set inputs
+  
+  tb->write(0x40, 0xAABBCCDD, 0xF);
+
+  //=================================
+  //      Tick (5)
+  
   tb->tick();
 
+
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_stb_i = 0;
 
+  //=================================
+  //      Tick (6)
+  
   tb->tick();
 
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_cyc_i = 0;
+
+  //=================================
+  //      Tick (7)
+  
   tb->tick();
+
+  //`````````````````````````````````
+  //      Set inputs
+  
+  tb->read(0x40, 0xF);
+
+  //=================================
+  //      Tick (8)
+  
+  tb->tick();
+
+  //`````````````````````````````````
+  //      Checks 
+  
+  tb->check(COND_write, (core->wb_dat_o == 0xAABBCCDD));
+
+  //`````````````````````````````````
+  //      Set inputs
+  
+  tb->core->wb_stb_i = 0;
+
+  //=================================
+  //      Tick (9)
+  
+  tb->tick();
+
+  //`````````````````````````````````
+  //      Set inputs
+  
+  tb->core->wb_cyc_i = 0;
+
+  //=================================
+  //      Tick (10)
+  
+  tb->tick();
+
+  //`````````````````````````````````
+  //      Formal Checks 
+  
+  CHECK("tb_ecap5_dwbmem_bram.w_32.01",
+      tb->conditions[COND_write],
+      "Failed to implement the write function", tb->err_cycles[COND_write]);
 }
 
 void tb_ecap5_dwbmem_bram_w_16(TB_Ecap5_dwbmem_bram * tb) {
   Vtb_ecap5_dwbmem_bram * core = tb->core;
   core->testcase = T_W16;
 
+  //=================================
+  //      Tick (0)
+  
   tb->reset();
 
-  tb->write(0x10, 0x55555555, 0x3);
+  //`````````````````````````````````
+  //      Set inputs
+  
+  uint32_t data = 0x11223344;
+  tb->write(0x40, data, 0xF);
+  
+  //=================================
+  //      Tick (1)
+  
   tb->tick();
 
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_stb_i = 0;
+  
+  //=================================
+  //      Tick (2)
+  
   tb->tick();
 
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_cyc_i = 0;
+  
+  //=================================
+  //      Tick (3)
+  
   tb->tick();
 
-  tb->read(0x10, 0xF);
-  tb->tick();
+  for(int i = 0; i < 2; i++) {
+    uint32_t write_data = 0xAABBCCDD;
+    tb->write(0x40 + 2*i, write_data, 0x3);
+    tb->tick();
+    tb->core->wb_stb_i = 0;
+    tb->tick();
+    tb->core->wb_cyc_i = 0;
+    tb->tick();
 
-  tb->core->wb_stb_i = 0;
+    tb->read(0x40, 0xF);
+    tb->tick();
+  
+    uint32_t expected_data = data & (0xFFFF << (16*(i+1))) | ((write_data & 0xFFFF) << (16*i));
+    tb->check(COND_write, (core->wb_dat_o == expected_data));
 
-  tb->tick();
+    tb->core->wb_stb_i = 0;
+    tb->tick();
+    tb->core->wb_cyc_i = 0;
+    tb->tick();
+  }
 
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
-
-  tb->write(0x12, 0x66666666, 0x3);
-  tb->tick();
-
-  tb->core->wb_stb_i = 0;
-  tb->tick();
-
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
-
-  tb->read(0x10, 0xF);
-  tb->tick();
-
-  tb->core->wb_stb_i = 0;
-
-  tb->tick();
-
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
+  //`````````````````````````````````
+  //      Formal Checks 
+  
+  CHECK("tb_ecap5_dwbmem_bram.w_16.01",
+      tb->conditions[COND_write],
+      "Failed to implement the write function", tb->err_cycles[COND_write]);
 }
 
 void tb_ecap5_dwbmem_bram_w_8(TB_Ecap5_dwbmem_bram * tb) {
   Vtb_ecap5_dwbmem_bram * core = tb->core;
   core->testcase = T_W8;
 
+  //=================================
+  //      Tick (0)
+  
   tb->reset();
 
-  tb->write(0x10, 0x77777777, 0x1);
+  //`````````````````````````````````
+  //      Set inputs
+  
+  uint32_t data = 0x11223344;
+  tb->write(0x40, data, 0xF);
+  
+  //=================================
+  //      Tick (1)
+  
   tb->tick();
 
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_stb_i = 0;
+  
+  //=================================
+  //      Tick (2)
+  
   tb->tick();
 
+  //`````````````````````````````````
+  //      Set inputs
+  
   tb->core->wb_cyc_i = 0;
+  
+  //=================================
+  //      Tick (3)
+  
   tb->tick();
 
-  tb->read(0x10, 0xF);
-  tb->tick();
+  for(int i = 0; i < 4; i++) {
+    uint32_t write_data = 0xAABBCCDD;
+    tb->write(0x40 + i, write_data, 0x1);
+    tb->tick();
+    tb->core->wb_stb_i = 0;
+    tb->tick();
+    tb->core->wb_cyc_i = 0;
+    tb->tick();
 
-  tb->core->wb_stb_i = 0;
+    tb->read(0x40, 0xF);
+    tb->tick();
+  
+    uint32_t expected_data = data & (0xFFFF << (8*(i+1))) | ((write_data & 0xFF) << (8*i));
+    tb->check(COND_write, (core->wb_dat_o == expected_data));
 
-  tb->tick();
+    tb->core->wb_stb_i = 0;
+    tb->tick();
+    tb->core->wb_cyc_i = 0;
+    tb->tick();
+  }
 
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
-
-  tb->write(0x11, 0x88888888, 0x1);
-  tb->tick();
-
-  tb->core->wb_stb_i = 0;
-  tb->tick();
-
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
-
-  tb->read(0x10, 0xF);
-  tb->tick();
-
-  tb->core->wb_stb_i = 0;
-
-  tb->tick();
-
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
-
-  tb->write(0x12, 0x99999999, 0x1);
-  tb->tick();
-
-  tb->core->wb_stb_i = 0;
-  tb->tick();
-
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
-
-  tb->read(0x10, 0xF);
-  tb->tick();
-
-  tb->core->wb_stb_i = 0;
-
-  tb->tick();
-
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
-
-  tb->write(0x13, 0xAAAAAAAA, 0x1);
-  tb->tick();
-
-  tb->core->wb_stb_i = 0;
-  tb->tick();
-
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
-
-  tb->read(0x10, 0xF);
-  tb->tick();
-
-  tb->core->wb_stb_i = 0;
-
-  tb->tick();
-
-  tb->core->wb_cyc_i = 0;
-  tb->tick();
+  //`````````````````````````````````
+  //      Formal Checks 
+  
+  CHECK("tb_ecap5_dwbmem_bram.w_8.01",
+      tb->conditions[COND_write],
+      "Failed to implement the write function", tb->err_cycles[COND_write]);
 }
 
 void tb_ecap5_dwbmem_bram_preload(TB_Ecap5_dwbmem_bram * tb) {
@@ -365,8 +567,12 @@ void tb_ecap5_dwbmem_bram_preload(TB_Ecap5_dwbmem_bram * tb) {
   tb->reset();
 
   for(int i = 0; i < 15; i++) {
-    tb->read(i, 0xF);
+    tb->read(4*i, 0xF);
+
     tb->tick();
+
+    uint32_t expected_data = (i+1) | (i+1) << 4 | (i+1) << 8 | (i+1) << 12 | (i+1) << 16 | (i+1) << 20 | (i+1) << 24 | (i+1) << 28;
+    tb->check(COND_preload, (core->wb_dat_o == expected_data));
 
     tb->core->wb_stb_i = 0;
 
@@ -375,6 +581,13 @@ void tb_ecap5_dwbmem_bram_preload(TB_Ecap5_dwbmem_bram * tb) {
     tb->core->wb_cyc_i = 0;
     tb->tick();
   }
+
+  //`````````````````````````````````
+  //      Formal Checks 
+  
+  CHECK("tb_ecap5_dwbmem_bram.preload.01",
+      tb->conditions[COND_preload],
+      "Failed to implement the preload function", tb->err_cycles[COND_preload]);
 }
 
 int main(int argc, char ** argv, char ** env) {
