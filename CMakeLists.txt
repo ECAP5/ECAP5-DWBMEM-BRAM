@@ -63,17 +63,10 @@ add_dependency(
   GIT ecap5/ecap5-dtestlib
   TAG release/v1.1.0)
 
-add_dependency(
-  GIT ecap5/ecap5-dwbmmsc
-  TAG release/v1.0.0)
-
 # Define an interface library
 add_library(ecap5_dwbmem_bram INTERFACE)
 target_sources(ecap5_dwbmem_bram INTERFACE
   ${CMAKE_CURRENT_LIST_DIR}/src/ecap5_dwbmem_bram.sv
-)
-target_link_libraries(ecap5_dwbmem_bram INTERFACE 
-  ecap5_dwbmmsc
 )
 
 if(PROJECT_IS_TOP_LEVEL)
