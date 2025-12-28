@@ -65,6 +65,9 @@ logic[7:0] read_data_bytes[4];
 logic[3:0] sel_shift0;
 logic[3:0] sel_shift1;
 
+logic[31:0] write_data_shift0;
+logic[31:0] write_data_shift1;
+
 /*****************************************/
 
 initial begin
@@ -110,6 +113,10 @@ always_comb begin : write
   // barrel shift the sel
   sel_shift0 = mem_addr[0] ? {mem_sel[2:0], 1'b0} : mem_sel;
   sel_shift1 = mem_addr[1] ? {sel_shift0[1:0], 2'b0} : sel_shift0;
+
+  // barrel shift the write data
+  write_data_shift0 = mem_addr[0] ? {mem_write_data[23:0], 8'b0} : mem_write_data;
+  write_data_shift1 = mem_addr[1] ? {write_data_shift0[15:0], 16'b0} : write_data_shift0;
 end
 
 always_ff @(posedge clk_i) begin
@@ -119,16 +126,16 @@ always_ff @(posedge clk_i) begin
 
   if(mem_write) begin
     if(sel_shift1[0]) begin
-      bram[cell_address][7:0] <= mem_write_data[7:0];
+      bram[cell_address][7:0] <= write_data_shift1[7:0];
     end
     if(sel_shift1[1]) begin
-      bram[cell_address][15:8] <= mem_write_data[15:8];
+      bram[cell_address][15:8] <= write_data_shift1[15:8];
     end
     if(sel_shift1[2]) begin
-      bram[cell_address][23:16] <= mem_write_data[23:16];
+      bram[cell_address][23:16] <= write_data_shift1[23:16];
     end
     if(sel_shift1[3]) begin
-      bram[cell_address][31:24] <= mem_write_data[31:24];
+      bram[cell_address][31:24] <= write_data_shift1[31:24];
     end
   end
 end
