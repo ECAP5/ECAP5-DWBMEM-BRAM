@@ -462,6 +462,7 @@ void tb_ecap5_dwbmem_bram_w_16(TB_Ecap5_dwbmem_bram * tb) {
   
   tb->tick();
 
+  uint32_t expected_data = data;
   for(int i = 0; i < 2; i++) {
     uint32_t write_data = 0xAABBCCDD;
     tb->write(0x40 + 2*i, write_data, 0x3);
@@ -474,7 +475,7 @@ void tb_ecap5_dwbmem_bram_w_16(TB_Ecap5_dwbmem_bram * tb) {
     tb->read(0x40, 0xF);
     tb->tick();
   
-    uint32_t expected_data = data & (0xFFFF << (16*(i+1))) | ((write_data & 0xFFFF) << (16*i));
+    expected_data = expected_data & ~(0xFFFF << (16*i)) | ((write_data & 0xFFFF) << (16*i));
     tb->check(COND_write, (core->wb_dat_o == expected_data));
 
     tb->core->wb_stb_i = 0;
@@ -531,6 +532,7 @@ void tb_ecap5_dwbmem_bram_w_8(TB_Ecap5_dwbmem_bram * tb) {
   
   tb->tick();
 
+  uint32_t expected_data = data;
   for(int i = 0; i < 4; i++) {
     uint32_t write_data = 0xAABBCCDD;
     tb->write(0x40 + i, write_data, 0x1);
@@ -543,7 +545,7 @@ void tb_ecap5_dwbmem_bram_w_8(TB_Ecap5_dwbmem_bram * tb) {
     tb->read(0x40, 0xF);
     tb->tick();
   
-    uint32_t expected_data = data & (0xFFFF << (8*(i+1))) | ((write_data & 0xFF) << (8*i));
+    expected_data = expected_data & ~(0xFF << (8*i)) | ((write_data & 0xFF) << (8*i));
     tb->check(COND_write, (core->wb_dat_o == expected_data));
 
     tb->core->wb_stb_i = 0;

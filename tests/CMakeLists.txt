@@ -39,6 +39,7 @@ add_testbench(
   BENCH_DIR         ${BENCH_DIR}
   TESTDATA_DIR      ${TESTDATA_DIR}
   TEST_INCLUDE_DIRS ${TEST_INCLUDE_DIRS}
+  DEFINES           PRELOAD_PATH=\\\"${CMAKE_CURRENT_SOURCE_DIR}/benches/ecap5_dwbmem_bram/program.hex\\\"
 )
 
 # Main targets
