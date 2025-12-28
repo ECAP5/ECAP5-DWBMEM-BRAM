@@ -43,7 +43,7 @@ module tb_ecap5_dwbmem_bram
 
 ecap5_dwbmem_bram #(
   .ENABLE_PRELOADING (1),
-  .PRELOAD_HEX_PATH ("/home/ubuntu/ecap5/design/wbmem-bram/tests/benches/ecap5_dwbmem_bram/program.hex")
+  .PRELOAD_HEX_PATH (`PRELOAD_PATH)
 ) dut (
   .clk_i      (clk_i),
   .rst_i      (rst_i),
