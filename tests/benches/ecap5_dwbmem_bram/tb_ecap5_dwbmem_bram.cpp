@@ -123,11 +123,6 @@ void tb_ecap5_dwbmem_bram_r_32(TB_Ecap5_dwbmem_bram * tb) {
   
   tb->tick();
 
-  //`````````````````````````````````
-  //      Set inputs
-  
-  tb->core->wb_cyc_i = 0;
-
   //=================================
   //      Tick (4)
   
@@ -136,7 +131,7 @@ void tb_ecap5_dwbmem_bram_r_32(TB_Ecap5_dwbmem_bram * tb) {
   //`````````````````````````````````
   //      Set inputs
   
-  tb->read(0x40, 0xF);
+  tb->core->wb_cyc_i = 0;
 
   //=================================
   //      Tick (5)
@@ -146,7 +141,7 @@ void tb_ecap5_dwbmem_bram_r_32(TB_Ecap5_dwbmem_bram * tb) {
   //`````````````````````````````````
   //      Set inputs
   
-  tb->core->wb_stb_i = 0;
+  tb->read(0x40, 0xF);
 
   //=================================
   //      Tick (6)
@@ -154,12 +149,27 @@ void tb_ecap5_dwbmem_bram_r_32(TB_Ecap5_dwbmem_bram * tb) {
   tb->tick();
 
   //`````````````````````````````````
+  //      Set inputs
+  
+  tb->core->wb_stb_i = 0;
+
+  //=================================
+  //      Tick (7)
+  
+  tb->tick();
+
+  //=================================
+  //      tick (8)
+  
+  tb->tick();
+   
+  //`````````````````````````````````
   //      Checks 
   
   tb->check(COND_read, (core->wb_dat_o == 0x11223344));
 
   //=================================
-  //      Tick (7)
+  //      Tick (9)
   
   tb->tick();
 
@@ -169,7 +179,7 @@ void tb_ecap5_dwbmem_bram_r_32(TB_Ecap5_dwbmem_bram * tb) {
   tb->core->wb_cyc_i = 0;
 
   //=================================
-  //      Tick (8)
+  //      Tick (10)
   
   tb->tick();
 
@@ -216,19 +226,24 @@ void tb_ecap5_dwbmem_bram_r_16(TB_Ecap5_dwbmem_bram * tb) {
   
   tb->tick();
 
+  //=================================
+  //      tick (4)
+  
+  tb->tick();
+
   //`````````````````````````````````
   //      Set inputs
   
   tb->core->wb_cyc_i = 0;
 
   //=================================
-  //      Tick (4)
+  //      Tick (5)
   
   tb->tick();
 
 
   //=================================
-  //      Tick (5-12)
+  //      Tick (6-12)
   
   for(int i = 0; i < 2; i++) {
     tb->read(0x40 + (2*i), 0x3);
@@ -236,6 +251,8 @@ void tb_ecap5_dwbmem_bram_r_16(TB_Ecap5_dwbmem_bram * tb) {
     tb->tick();
 
     tb->core->wb_stb_i = 0;
+
+    tb->tick();
 
     tb->tick();
 
@@ -292,18 +309,23 @@ void tb_ecap5_dwbmem_bram_r_8(TB_Ecap5_dwbmem_bram * tb) {
   
   tb->tick();
 
+  //=================================
+  //      Tick (4)
+  
+  tb->tick();
+
   //`````````````````````````````````
   //      Set inputs
   
   tb->core->wb_cyc_i = 0;
 
   //=================================
-  //      Tick (4)
+  //      Tick (5)
   
   tb->tick();
 
   //=================================
-  //      Tick (5-20)
+  //      Tick (6-20)
   
   for(int i = 0; i < 4; i++) {
     tb->read(0x40 + i, 0x1);
@@ -311,6 +333,8 @@ void tb_ecap5_dwbmem_bram_r_8(TB_Ecap5_dwbmem_bram * tb) {
     tb->tick();
 
     tb->core->wb_stb_i = 0;
+
+    tb->tick();
 
     tb->tick();
 
@@ -367,13 +391,18 @@ void tb_ecap5_dwbmem_bram_w_32(TB_Ecap5_dwbmem_bram * tb) {
   
   tb->tick();
 
+  //=================================
+  //      Tick (4)
+  
+  tb->tick();
+
   //`````````````````````````````````
   //      Set inputs
   
   tb->core->wb_cyc_i = 0;
 
   //=================================
-  //      Tick (4)
+  //      Tick (5)
   
   tb->tick();
 
@@ -386,7 +415,6 @@ void tb_ecap5_dwbmem_bram_w_32(TB_Ecap5_dwbmem_bram * tb) {
   //      Tick (6)
   
   tb->tick();
-
 
   //`````````````````````````````````
   //      Set inputs
@@ -403,11 +431,6 @@ void tb_ecap5_dwbmem_bram_w_32(TB_Ecap5_dwbmem_bram * tb) {
   
   tb->tick();
 
-  //`````````````````````````````````
-  //      Set inputs
-  
-  tb->core->wb_cyc_i = 0;
-
   //=================================
   //      Tick (9)
   
@@ -416,7 +439,7 @@ void tb_ecap5_dwbmem_bram_w_32(TB_Ecap5_dwbmem_bram * tb) {
   //`````````````````````````````````
   //      Set inputs
   
-  tb->read(0x40, 0xF);
+  tb->core->wb_cyc_i = 0;
 
   //=================================
   //      Tick (10)
@@ -426,10 +449,25 @@ void tb_ecap5_dwbmem_bram_w_32(TB_Ecap5_dwbmem_bram * tb) {
   //`````````````````````````````````
   //      Set inputs
   
-  tb->core->wb_stb_i = 0;
+  tb->read(0x40, 0xF);
 
   //=================================
   //      Tick (11)
+  
+  tb->tick();
+
+  //`````````````````````````````````
+  //      Set inputs
+  
+  tb->core->wb_stb_i = 0;
+
+  //=================================
+  //      Tick (12)
+  
+  tb->tick();
+
+  //=================================
+  //      Tick (13)
   
   tb->tick();
 
@@ -439,7 +477,7 @@ void tb_ecap5_dwbmem_bram_w_32(TB_Ecap5_dwbmem_bram * tb) {
   tb->check(COND_write, (core->wb_dat_o == 0xAABBCCDD));
 
   //=================================
-  //      Tick (12)
+  //      Tick (14)
   
   tb->tick();
 
@@ -449,7 +487,7 @@ void tb_ecap5_dwbmem_bram_w_32(TB_Ecap5_dwbmem_bram * tb) {
   tb->core->wb_cyc_i = 0;
 
   //=================================
-  //      Tick (13)
+  //      Tick (15)
   
   tb->tick();
 
@@ -496,13 +534,18 @@ void tb_ecap5_dwbmem_bram_w_16(TB_Ecap5_dwbmem_bram * tb) {
   
   tb->tick();
 
+  //=================================
+  //      Tick (4)
+  
+  tb->tick();
+
   //`````````````````````````````````
   //      Set inputs
   
   tb->core->wb_cyc_i = 0;
   
   //=================================
-  //      Tick (4)
+  //      Tick (5)
   
   tb->tick();
 
@@ -514,12 +557,14 @@ void tb_ecap5_dwbmem_bram_w_16(TB_Ecap5_dwbmem_bram * tb) {
     tb->core->wb_stb_i = 0;
     tb->tick();
     tb->tick();
+    tb->tick();
     tb->core->wb_cyc_i = 0;
     tb->tick();
 
     tb->read(0x40, 0xF);
     tb->tick();
     tb->core->wb_stb_i = 0;
+    tb->tick();
     tb->tick();
 
     expected_data = expected_data & ~(0xFFFF << (16*i)) | ((write_data & 0xFFFF) << (16*i));
@@ -573,13 +618,18 @@ void tb_ecap5_dwbmem_bram_w_8(TB_Ecap5_dwbmem_bram * tb) {
   
   tb->tick();
 
+  //=================================
+  //      Tick (4)
+  
+  tb->tick();
+
   //`````````````````````````````````
   //      Set inputs
   
   tb->core->wb_cyc_i = 0;
   
   //=================================
-  //      Tick (4)
+  //      Tick (5)
   
   tb->tick();
 
@@ -591,12 +641,14 @@ void tb_ecap5_dwbmem_bram_w_8(TB_Ecap5_dwbmem_bram * tb) {
     tb->core->wb_stb_i = 0;
     tb->tick();
     tb->tick();
+    tb->tick();
     tb->core->wb_cyc_i = 0;
     tb->tick();
 
     tb->read(0x40, 0xF);
     tb->tick();
     tb->core->wb_stb_i = 0;
+    tb->tick();
     tb->tick();
 
     expected_data = expected_data & ~(0xFF << (8*i)) | ((write_data & 0xFF) << (8*i));
@@ -625,6 +677,7 @@ void tb_ecap5_dwbmem_bram_preload(TB_Ecap5_dwbmem_bram * tb) {
     tb->read(4*i, 0xF);
     tb->tick();
     tb->core->wb_stb_i = 0;
+    tb->tick();
     tb->tick();
 
     uint32_t expected_data = (i+1) | (i+1) << 4 | (i+1) << 8 | (i+1) << 12 | (i+1) << 16 | (i+1) << 20 | (i+1) << 24 | (i+1) << 28;

@@ -44,8 +44,9 @@ module ecap5_dwbmem_bram #(
 
 typedef enum {
   IDLE = 0,
-  ACCESS = 1,
-  RESPONSE = 2
+  ADDRESS = 1,
+  ACCESS = 2,
+  RESPONSE = 3
 } state_t;
 
 /*****************************************/
@@ -64,8 +65,9 @@ logic[31:0] mem_read_data,
 logic[3:0]  mem_sel_d, mem_sel_q;
 
 logic[31:0] bram[SIZE];
-logic[$clog2(SIZE)-1:0]  bram_cell_address;
-logic[31:0] bram_data_q, bram_data_qq;
+logic[$clog2(SIZE)-1:0]  bram_cell_address_q;
+logic[31:0] bram_data_q;
+logic[31:0] bram_data_qq;
 logic[31:0] bram_data_shift0, bram_data_shift1;
 
 logic[7:0] read_data_bytes[4];
@@ -93,13 +95,16 @@ always_comb begin : wishbone
   case(state_q)
     IDLE: begin
       if(wb_stb_i && wb_cyc_i) begin
-        state_d = ACCESS;
+        state_d = ADDRESS;
         mem_addr_d = wb_adr_i;
         mem_write_data_d = wb_dat_i;
         mem_read_d = !wb_we_i;
         mem_write_d = wb_we_i;
         mem_sel_d = wb_sel_i;
       end
+    end
+    ADDRESS: begin
+      state_d = ACCESS;
     end
     ACCESS: begin
       state_d = RESPONSE;
@@ -115,8 +120,6 @@ always_comb begin : wishbone
 end
 
 always_comb begin : read
-  bram_cell_address = wb_adr_i[$clog2(SIZE)-1+2:2];
-
   // barrel shift the data according to the address
   bram_data_shift0 = mem_addr_q[0] ? {8'b0,  bram_data_qq[31:8]} : bram_data_qq;
   bram_data_shift1 = mem_addr_q[1] ? {16'b0, bram_data_shift0[31:16]} : bram_data_shift0;
@@ -142,6 +145,29 @@ always_comb begin : write
 end
 
 always_ff @(posedge clk_i) begin
+  bram_cell_address_q <= wb_adr_i[$clog2(SIZE)+1:2];
+
+  bram_data_q <= bram[bram_cell_address_q];
+  /* Add a double registering to reduce bram timing constraints */
+  bram_data_qq <= bram_data_q;
+
+  if(state_q == ACCESS && mem_write_q) begin
+    if(sel_shift1[0]) begin
+      bram[bram_cell_address_q][7:0] <= mem_write_data_shift1[7:0];
+    end
+    if(sel_shift1[1]) begin
+      bram[bram_cell_address_q][15:8] <= mem_write_data_shift1[15:8];
+    end
+    if(sel_shift1[2]) begin
+      bram[bram_cell_address_q][23:16] <= mem_write_data_shift1[23:16];
+    end
+    if(sel_shift1[3]) begin
+      bram[bram_cell_address_q][31:24] <= mem_write_data_shift1[31:24];
+    end
+  end
+end
+
+always_ff @(posedge clk_i) begin
   if(rst_i) begin
     state_q <= IDLE;  
 
@@ -162,29 +188,6 @@ always_ff @(posedge clk_i) begin
     mem_sel_q               <=  mem_sel_d;
 
     wb_ack_q                <=  wb_ack_d;
-  end
-
-  /* BRAM access */
-
-  bram_data_q <= bram[bram_cell_address];
-  /* Add a double registering to reduce bram timing constraints */
-  if(state_q == ACCESS) begin
-    bram_data_qq <= bram_data_q;
-  end
-
-  if(state_q == ACCESS && mem_write_q) begin
-    if(sel_shift1[0]) begin
-      bram[bram_cell_address][7:0] <= mem_write_data_shift1[7:0];
-    end
-    if(sel_shift1[1]) begin
-      bram[bram_cell_address][15:8] <= mem_write_data_shift1[15:8];
-    end
-    if(sel_shift1[2]) begin
-      bram[bram_cell_address][23:16] <= mem_write_data_shift1[23:16];
-    end
-    if(sel_shift1[3]) begin
-      bram[bram_cell_address][31:24] <= mem_write_data_shift1[31:24];
-    end
   end
 end
 
