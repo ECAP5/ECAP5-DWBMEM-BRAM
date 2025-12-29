@@ -115,7 +115,7 @@ always_comb begin : wishbone
 end
 
 always_comb begin : read
-  bram_cell_address = {2'b0, wb_adr_i[$clog2(SIZE)-1:2]};
+  bram_cell_address = wb_adr_i[$clog2(SIZE)-1+2:2];
 
   // barrel shift the data according to the address
   bram_data_shift0 = mem_addr_q[0] ? {8'b0,  bram_data_qq[31:8]} : bram_data_qq;
